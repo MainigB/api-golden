@@ -10,11 +10,18 @@ dotenv.config();
 if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
   try {
     const { execSync } = require('child_process');
+    const path = require('path');
     console.log('🔄 Aplicando migrations do banco de dados...');
-    execSync('npx prisma migrate deploy', { stdio: 'inherit', env: process.env });
+    const prismaPath = path.join(process.cwd(), 'node_modules', '.bin', 'prisma');
+    execSync(`"${prismaPath}" migrate deploy`, { 
+      stdio: 'inherit', 
+      env: process.env,
+      cwd: process.cwd()
+    });
     console.log('✅ Migrations aplicadas com sucesso!');
-  } catch (error) {
-    console.error('⚠️  Aviso: Erro ao aplicar migrations (pode ser normal se já foram aplicadas):', error);
+  } catch (error: any) {
+    console.error('⚠️  Aviso: Erro ao aplicar migrations:', error.message);
+    // Não bloqueia a inicialização se as migrations já foram aplicadas
   }
 }
 
