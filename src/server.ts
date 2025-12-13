@@ -6,6 +6,18 @@ import pedidosRoutes from './routes/pedidos.routes';
 
 dotenv.config();
 
+// Aplicar migrations automaticamente na inicialização (apenas em produção)
+if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
+  try {
+    const { execSync } = require('child_process');
+    console.log('🔄 Aplicando migrations do banco de dados...');
+    execSync('npx prisma migrate deploy', { stdio: 'inherit', env: process.env });
+    console.log('✅ Migrations aplicadas com sucesso!');
+  } catch (error) {
+    console.error('⚠️  Aviso: Erro ao aplicar migrations (pode ser normal se já foram aplicadas):', error);
+  }
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
