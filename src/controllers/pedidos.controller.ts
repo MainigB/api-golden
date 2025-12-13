@@ -38,9 +38,12 @@ export const criarPedido = async (req: Request, res: Response) => {
       message: 'Pedido criado com sucesso',
       pedido
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Erro ao criar pedido:', error);
-    res.status(500).json({ error: 'Erro ao criar pedido' });
+    res.status(500).json({ 
+      error: 'Erro ao criar pedido',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
@@ -54,9 +57,12 @@ export const listarPedidos = async (req: Request, res: Response) => {
     });
 
     res.json(pedidos);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Erro ao listar pedidos:', error);
-    res.status(500).json({ error: 'Erro ao listar pedidos' });
+    res.status(500).json({ 
+      error: 'Erro ao listar pedidos',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
