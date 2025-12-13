@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: api-golden
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+
+databases:
+  - name: api-golden-db
+    databaseName: api_golden
+    user: api_golden_user
+    plan: free
+
