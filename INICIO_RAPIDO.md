@@ -41,3 +41,4 @@ curl -Method POST -Uri "http://localhost:3000/api/pedidos" `
 ## 📚 Para mais detalhes, veja o arquivo `GUIA_INSTALACAO.md`
 
 
+

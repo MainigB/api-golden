@@ -7,6 +7,11 @@ const prisma = new PrismaClient();
 // Criar novo pedido
 export const criarPedido = async (req: Request, res: Response) => {
   try {
+    console.log('📥 Recebendo requisição de criação de pedido');
+    console.log('Body:', req.body);
+    console.log('File:', req.file);
+    console.log('Content-Type:', req.get('content-type'));
+
     const { cliente, data, tipo, qtd, desc, status, resumo, foto } = req.body;
 
     // Validações básicas
@@ -28,10 +33,13 @@ export const criarPedido = async (req: Request, res: Response) => {
     
     // Se enviou arquivo via multer
     if (req.file) {
+      console.log('✅ Arquivo recebido via multer:', req.file.filename);
       fotoUrl = getImageUrl(req, req.file.filename);
+      console.log('📸 URL da foto gerada:', fotoUrl);
     }
     // Se enviou base64 no body
     else if (foto) {
+      console.log('✅ Foto recebida como base64 ou URL');
       // Se já é uma URL, usa como está
       if (foto.startsWith('http://') || foto.startsWith('https://')) {
         fotoUrl = foto;
@@ -40,6 +48,8 @@ export const criarPedido = async (req: Request, res: Response) => {
       else if (foto.startsWith('data:image/')) {
         fotoUrl = foto;
       }
+    } else {
+      console.log('ℹ️  Nenhuma foto enviada');
     }
 
     const pedido = await prisma.pedido.create({

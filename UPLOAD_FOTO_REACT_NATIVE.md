@@ -379,3 +379,4 @@ const atualizarFotoPedido = async (pedidoId, novaFotoUri) => {
 
 Para React Native, use **FormData** com **Expo Image Picker** ou **React Native Image Picker**. É a solução mais eficiente e nativa.
 
+

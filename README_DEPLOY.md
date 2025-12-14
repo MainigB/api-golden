@@ -79,3 +79,4 @@ Veja o arquivo `GUIA_DEPLOY.md` para:
 - ✅ Migrations precisam ser aplicadas após primeiro deploy
 
 
+

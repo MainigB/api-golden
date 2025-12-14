@@ -69,3 +69,4 @@ export const getImageUrl = (req: any, filename: string) => {
   return `${baseUrl}/uploads/${filename}`;
 };
 
+

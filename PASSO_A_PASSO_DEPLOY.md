@@ -115,3 +115,4 @@ Sua API está online e acessível de qualquer lugar!
 - Execute: `npx prisma migrate deploy`
 
 
+
