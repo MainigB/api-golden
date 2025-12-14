@@ -22,7 +22,7 @@ const handleMulterError = (err: any, req: any, res: any, next: any) => {
     });
     
     if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ error: 'Arquivo muito grande. Tamanho máximo: 50MB' });
+      return res.status(400).json({ error: 'Arquivo muito grande. Tamanho máximo: 100MB' });
     }
     if (err.code === 'LIMIT_UNEXPECTED_FILE') {
       return res.status(400).json({ error: 'Campo de arquivo inesperado. Use o campo "foto"' });
