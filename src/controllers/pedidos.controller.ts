@@ -39,7 +39,9 @@ export const criarPedido = async (req: Request, res: Response) => {
       mimetype: req.file.mimetype,
       size: req.file.size
     } : 'null');
-    console.log('req.body.foto:', foto ? (foto.substring(0, 50) + '...') : 'null');
+    console.log('req.body.foto:', foto ? (typeof foto === 'string' ? foto.substring(0, 100) + '...' : foto) : 'null');
+    console.log('Tipo de foto:', typeof foto);
+    console.log('Foto começa com data:', foto && typeof foto === 'string' ? foto.startsWith('data:') : false);
     
     // Se enviou arquivo via multer
     if (req.file) {
@@ -49,18 +51,37 @@ export const criarPedido = async (req: Request, res: Response) => {
     }
     // Se enviou base64 no body (quando não usa FormData)
     else if (foto) {
-      console.log('✅ Foto recebida no body (base64 ou URL)');
-      // Se já é uma URL, usa como está
-      if (typeof foto === 'string' && (foto.startsWith('http://') || foto.startsWith('https://'))) {
-        fotoUrl = foto;
-        console.log('📸 Usando URL completa');
-      }
-      // Se é base64, salva como está
-      else if (typeof foto === 'string' && foto.startsWith('data:image/')) {
-        fotoUrl = foto;
-        console.log('📸 Usando base64');
+      console.log('✅ Foto recebida no body');
+      
+      if (typeof foto === 'string') {
+        // Se já é uma URL completa, usa como está
+        if (foto.startsWith('http://') || foto.startsWith('https://')) {
+          fotoUrl = foto;
+          console.log('📸 Usando URL completa');
+        }
+        // Se já tem o prefixo data:image/, usa como está
+        else if (foto.startsWith('data:image/')) {
+          fotoUrl = foto;
+          console.log('📸 Usando base64 com prefixo');
+        }
+        // Se é base64 puro (sem prefixo), adiciona o prefixo
+        else if (foto.length > 100 && /^[A-Za-z0-9+/=]+$/.test(foto.substring(0, 100))) {
+          // Parece ser base64 puro, adicionar prefixo
+          fotoUrl = `data:image/jpeg;base64,${foto}`;
+          console.log('📸 Base64 puro detectado, prefixo adicionado');
+        }
+        // Se começa com /9j/ (JPEG em base64 sem prefixo)
+        else if (foto.startsWith('/9j/') || foto.startsWith('iVBORw0KGgo')) {
+          // JPEG ou PNG em base64 sem prefixo
+          const mimeType = foto.startsWith('/9j/') ? 'image/jpeg' : 'image/png';
+          fotoUrl = `data:${mimeType};base64,${foto}`;
+          console.log('📸 Base64 detectado (JPEG/PNG), prefixo adicionado');
+        }
+        else {
+          console.log('⚠️  Formato de foto não reconhecido. Primeiros caracteres:', foto.substring(0, 50));
+        }
       } else {
-        console.log('⚠️  Formato de foto não reconhecido:', typeof foto);
+        console.log('⚠️  Foto não é uma string:', typeof foto);
       }
     } else {
       console.log('ℹ️  Nenhuma foto enviada (req.file e req.body.foto são null/undefined)');
