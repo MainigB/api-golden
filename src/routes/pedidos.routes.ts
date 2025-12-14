@@ -36,7 +36,7 @@ router.get('/', listarPedidos);
 router.get('/:id', buscarPedido);
 
 // Atualizar pedido completo (com suporte a upload de foto)
-router.put('/:id', upload.single('foto'), atualizarPedido);
+router.put('/:id', upload.single('foto'), handleMulterError, atualizarPedido);
 
 // Atualizar apenas o status do pedido
 router.patch('/:id/status', atualizarStatus);
