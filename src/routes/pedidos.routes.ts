@@ -14,15 +14,30 @@ const router = Router();
 // Middleware para tratar erros do multer
 const handleMulterError = (err: any, req: any, res: any, next: any) => {
   if (err) {
-    console.error('Erro no multer:', err);
+    console.error('❌ Erro no multer:', {
+      code: err.code,
+      message: err.message,
+      field: err.field,
+      name: err.name
+    });
+    
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({ error: 'Arquivo muito grande. Tamanho máximo: 5MB' });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({ error: 'Campo de arquivo inesperado. Use o campo "foto"' });
     }
     if (err.message) {
       return res.status(400).json({ error: err.message });
     }
-    return res.status(400).json({ error: 'Erro ao processar arquivo' });
+    return res.status(400).json({ error: 'Erro ao processar arquivo', details: err.message });
   }
+  
+  // Log após processamento do multer
+  console.log('✅ Multer processado sem erros');
+  console.log('req.file após multer:', req.file ? 'existe' : 'não existe');
+  console.log('req.body após multer:', Object.keys(req.body));
+  
   next();
 };
 

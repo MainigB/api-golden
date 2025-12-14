@@ -22,18 +22,29 @@ const storage = multer.diskStorage({
 
 // Filtro para aceitar apenas imagens
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  console.log('🔍 FileFilter - Verificando arquivo:', {
+    fieldname: file.fieldname,
+    originalname: file.originalname,
+    mimetype: file.mimetype,
+    encoding: file.encoding
+  });
+
   const allowedMimes = [
     'image/jpeg',
     'image/jpg',
     'image/png',
     'image/gif',
-    'image/webp'
+    'image/webp',
+    'image/*' // Aceitar qualquer tipo de imagem
   ];
 
-  if (allowedMimes.includes(file.mimetype)) {
+  // Verificar se é uma imagem
+  if (file.mimetype.startsWith('image/') || allowedMimes.includes(file.mimetype)) {
+    console.log('✅ Arquivo aceito pelo fileFilter');
     cb(null, true);
   } else {
-    cb(new Error('Apenas imagens são permitidas (JPEG, PNG, GIF, WEBP)'));
+    console.log('❌ Arquivo rejeitado pelo fileFilter:', file.mimetype);
+    cb(new Error(`Apenas imagens são permitidas. Tipo recebido: ${file.mimetype}`));
   }
 };
 

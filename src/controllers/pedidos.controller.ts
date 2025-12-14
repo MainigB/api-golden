@@ -31,26 +31,42 @@ export const criarPedido = async (req: Request, res: Response) => {
     // Processar foto
     let fotoUrl = null;
     
+    console.log('🔍 Processando foto...');
+    console.log('req.file:', req.file ? {
+      fieldname: req.file.fieldname,
+      originalname: req.file.originalname,
+      filename: req.file.filename,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    } : 'null');
+    console.log('req.body.foto:', foto ? (foto.substring(0, 50) + '...') : 'null');
+    
     // Se enviou arquivo via multer
     if (req.file) {
       console.log('✅ Arquivo recebido via multer:', req.file.filename);
       fotoUrl = getImageUrl(req, req.file.filename);
       console.log('📸 URL da foto gerada:', fotoUrl);
     }
-    // Se enviou base64 no body
+    // Se enviou base64 no body (quando não usa FormData)
     else if (foto) {
-      console.log('✅ Foto recebida como base64 ou URL');
+      console.log('✅ Foto recebida no body (base64 ou URL)');
       // Se já é uma URL, usa como está
-      if (foto.startsWith('http://') || foto.startsWith('https://')) {
+      if (typeof foto === 'string' && (foto.startsWith('http://') || foto.startsWith('https://'))) {
         fotoUrl = foto;
+        console.log('📸 Usando URL completa');
       }
       // Se é base64, salva como está
-      else if (foto.startsWith('data:image/')) {
+      else if (typeof foto === 'string' && foto.startsWith('data:image/')) {
         fotoUrl = foto;
+        console.log('📸 Usando base64');
+      } else {
+        console.log('⚠️  Formato de foto não reconhecido:', typeof foto);
       }
     } else {
-      console.log('ℹ️  Nenhuma foto enviada');
+      console.log('ℹ️  Nenhuma foto enviada (req.file e req.body.foto são null/undefined)');
     }
+    
+    console.log('📸 Foto final que será salva:', fotoUrl ? (fotoUrl.substring(0, 100) + '...') : 'NULL');
 
     const pedido = await prisma.pedido.create({
       data: {
