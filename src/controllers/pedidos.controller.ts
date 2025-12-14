@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { getImageUrl } from '../middleware/upload';
 
 const prisma = new PrismaClient();
 
 // Criar novo pedido
 export const criarPedido = async (req: Request, res: Response) => {
   try {
-    const { cliente, data, tipo, qtd, desc, status, resumo } = req.body;
+    const { cliente, data, tipo, qtd, desc, status, resumo, foto } = req.body;
 
     // Validações básicas
     if (!cliente || !tipo || !qtd) {
@@ -22,6 +23,25 @@ export const criarPedido = async (req: Request, res: Response) => {
       });
     }
 
+    // Processar foto
+    let fotoUrl = null;
+    
+    // Se enviou arquivo via multer
+    if (req.file) {
+      fotoUrl = getImageUrl(req, req.file.filename);
+    }
+    // Se enviou base64 no body
+    else if (foto) {
+      // Se já é uma URL, usa como está
+      if (foto.startsWith('http://') || foto.startsWith('https://')) {
+        fotoUrl = foto;
+      }
+      // Se é base64, salva como está
+      else if (foto.startsWith('data:image/')) {
+        fotoUrl = foto;
+      }
+    }
+
     const pedido = await prisma.pedido.create({
       data: {
         cliente,
@@ -30,7 +50,8 @@ export const criarPedido = async (req: Request, res: Response) => {
         qtd: parseInt(qtd),
         desc: desc || null,
         status: status || 'pendente',
-        resumo: resumo || null
+        resumo: resumo || null,
+        foto: fotoUrl
       }
     });
 
@@ -90,7 +111,7 @@ export const buscarPedido = async (req: Request, res: Response) => {
 export const atualizarPedido = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { cliente, data, tipo, qtd, desc, status, resumo } = req.body;
+    const { cliente, data, tipo, qtd, desc, status, resumo, foto } = req.body;
 
     // Verificar se o pedido existe
     const pedidoExistente = await prisma.pedido.findUnique({
@@ -110,6 +131,17 @@ export const atualizarPedido = async (req: Request, res: Response) => {
     if (desc !== undefined) dadosAtualizacao.desc = desc || null;
     if (status) dadosAtualizacao.status = status;
     if (resumo !== undefined) dadosAtualizacao.resumo = resumo || null;
+
+    // Processar foto
+    if (req.file) {
+      dadosAtualizacao.foto = getImageUrl(req, req.file.filename);
+    } else if (foto !== undefined) {
+      if (foto && (foto.startsWith('http://') || foto.startsWith('https://') || foto.startsWith('data:image/'))) {
+        dadosAtualizacao.foto = foto;
+      } else if (foto === null || foto === '') {
+        dadosAtualizacao.foto = null;
+      }
+    }
 
     const pedido = await prisma.pedido.update({
       where: { id: parseInt(id) },

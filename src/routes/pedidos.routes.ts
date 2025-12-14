@@ -7,11 +7,12 @@ import {
   atualizarStatus,
   deletarPedido
 } from '../controllers/pedidos.controller';
+import { upload } from '../middleware/upload';
 
 const router = Router();
 
-// Criar novo pedido
-router.post('/', criarPedido);
+// Criar novo pedido (com suporte a upload de foto)
+router.post('/', upload.single('foto'), criarPedido);
 
 // Listar todos os pedidos
 router.get('/', listarPedidos);
@@ -19,8 +20,8 @@ router.get('/', listarPedidos);
 // Buscar pedido por ID
 router.get('/:id', buscarPedido);
 
-// Atualizar pedido completo
-router.put('/:id', atualizarPedido);
+// Atualizar pedido completo (com suporte a upload de foto)
+router.put('/:id', upload.single('foto'), atualizarPedido);
 
 // Atualizar apenas o status do pedido
 router.patch('/:id/status', atualizarStatus);

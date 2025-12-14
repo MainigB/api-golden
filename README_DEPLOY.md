@@ -78,3 +78,4 @@ Veja o arquivo `GUIA_DEPLOY.md` para:
 - ✅ Apenas precisa fazer push para GitHub e conectar no serviço
 - ✅ Migrations precisam ser aplicadas após primeiro deploy
 
+

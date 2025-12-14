@@ -114,3 +114,4 @@ Sua API está online e acessível de qualquer lugar!
 - Verifique se a `DATABASE_URL` está configurada
 - Execute: `npx prisma migrate deploy`
 
+

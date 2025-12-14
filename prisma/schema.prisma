@@ -19,6 +19,7 @@ model Pedido {
   desc    String?
   status  String   @default("pendente")
   resumo  String?
+  foto    String?  // URL da foto ou base64
 
   @@map("pedidos")
 }

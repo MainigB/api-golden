@@ -80,3 +80,4 @@ Acesse: `https://seu-projeto.up.railway.app/health`
 
 Após aplicar as migrations uma vez, o Railway pode fazer deploy automático. Se quiser automatizar as migrations no futuro, você pode criar um script de inicialização que verifica e aplica migrations automaticamente.
 
+

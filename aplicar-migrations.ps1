@@ -51,3 +51,4 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Verifique se o banco PostgreSQL foi criado no Railway." -ForegroundColor Yellow
 }
 
+
