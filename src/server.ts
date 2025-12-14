@@ -33,8 +33,8 @@ const prisma = new PrismaClient();
 
 // Middlewares
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' })); // Aumentar limite para JSON (base64)
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Aumentar limite para URL encoded
 
 // Servir arquivos estáticos (uploads)
 import path from 'path';

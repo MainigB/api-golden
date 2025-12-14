@@ -167,3 +167,4 @@ const fotoBase64 = `data:image/jpeg;base64,${base64String}`;
 await api.post('/api/pedidos', { ...dados, foto: fotoBase64 });
 ```
 
+

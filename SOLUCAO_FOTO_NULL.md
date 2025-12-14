@@ -216,3 +216,4 @@ await api.post('/api/pedidos', {
 
 **Para Railway, use Base64!** É mais simples, confiável e não depende de storage persistente.
 
+
